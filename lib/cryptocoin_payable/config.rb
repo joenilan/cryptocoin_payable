@@ -29,6 +29,16 @@ module CryptocoinPayable
         config.chain_id = CryptocoinPayable.configuration.eth.chain_id
       end
     end
+    
+        def configure_grs
+      self.grs ||= GrsConfiguration.new
+      yield(grs)
+
+      # TODO: Put this somewhere better.
+      Grs.configure do |config|
+        config.chain_id = CryptocoinPayable.configuration.grs.chain_id
+      end
+    end
 
     private
 
@@ -49,6 +59,23 @@ module CryptocoinPayable
     end
 
     class EthConfiguration < CoinConfiguration
+      attr_accessor :mnemonic, :chain_id
+
+      def confirmations
+        @confirmations ||= 12
+      end
+
+      def chain_id
+        @chain_id ||= (CryptocoinPayable.configuration.testnet ? 4 : 1)
+      end
+
+      def network
+        @network ||= (CryptocoinPayable.configuration.testnet ? :rinkeby : :mainnet)
+      end
+    end
+    
+  #GRS Stuff, needs work
+    class GrsConfiguration < CoinConfiguration
       attr_accessor :mnemonic, :chain_id
 
       def confirmations
