@@ -6,14 +6,14 @@ module CryptocoinPayable
       # Implement these in a subclass:
 
       # Returns the amount of cents in the main unit. E.g. 10^18 Wei in Ether.
-      # def self.subunit_in_main
-      #   1_000_000_000_000_000_000
-      # end
+       def self.subunit_in_main
+         1_000_000_000_000_000_000
+       end
 
       # Returns the currency symbol (used for querying for ticker data).
-      # def self.coin_symbol
-      #   'ETH'
-      # end
+       def self.coin_symbol
+         'GRS'
+       end
 
       # Queries an API like etherscan.io and returns a list of transactions
       # which conform to the following shape:
@@ -53,11 +53,11 @@ module CryptocoinPayable
 
       def self.get_rate
         amount = begin
-          response = get_request("https://api.coinbase.com/v2/prices/#{coin_symbol}-#{CryptocoinPayable.configuration.currency.to_s.upcase}/spot")
-          JSON.parse(response.body)['data']['amount'].to_f
+          response = get_request("https://min-api.cryptocompare.com/data/price?fsym=#{coin_symbol}&tsyms=#{CryptocoinPayable.configuration.currency.to_s.upcase}")
+          JSON.parse(response.body).to_f
         rescue EOFError
-          response = get_request("https://api.gemini.com/v1/pubticker/#{coin_symbol}#{CryptocoinPayable.configuration.currency.to_s.upcase}")
-          JSON.parse(response.body)['last'].to_f
+          response = get_request("https://min-api.cryptocompare.com/data/price?fsym=#{coin_symbol}&tsyms=#{CryptocoinPayable.configuration.currency.to_s.upcase}")
+          JSON.parse(response.body).to_f
         end
         (amount * 100).to_i
       end
