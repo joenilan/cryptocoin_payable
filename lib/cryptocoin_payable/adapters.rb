@@ -10,6 +10,8 @@ module CryptocoinPayable
         Ethereum
       when :btc
         Bitcoin
+      when :grs
+        Groestlcoin
       else
         raise "Invalid coin type #{coin_type}"
       end
